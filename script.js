@@ -12,12 +12,20 @@ const createchatLi = (message, className) => {
     return chatLi;
 };
 
+const scrollToBottom = () => {
+    chatbox.scrollTo({
+        top: chatbox.scrollHeight,
+        behavior: 'smooth'
+    });
+};
+
 const handleChat = async () => {
     const userMessage = chatInput.value.trim();
     if (!userMessage) return;
 
     chatbox.appendChild(createchatLi(userMessage, "outgoing"));
     chatInput.value = "";
+    scrollToBottom();
 
     try {
         const response = await fetch(API_URL, {
@@ -36,6 +44,9 @@ const handleChat = async () => {
         chatbox.appendChild(createchatLi(data.message, "incoming"));
     } catch (error) {
         console.error("Error:", error);
+    }
+    finally{
+        scrollToBottom();
     }
 };
 
