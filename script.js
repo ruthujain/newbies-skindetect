@@ -1,53 +1,35 @@
-const chatInput = document.querySelector(".chat-input textarea");
-const sendChatBtn = document.getElementById("send-btn"); // Update selector if needed
-const chatbox = document.querySelector(".chatbox");
+const profiles = document.querySelector('.dog-profiles');
+const profileCount = profiles.children.length;
+let currentIndex = 0;
 
-const API_URL = "http://localhost:5000/api/chatbot"; // Update with your Flask server URL
+function moveProfiles() {
+    profiles.style.transform = `translateX(-${currentIndex * 260}px)`;
+    currentIndex = (currentIndex + 1) % profileCount;
+}
 
-const createchatLi = (message, className) => {
-    const chatLi = document.createElement("li");
-    chatLi.classList.add("chat", className);
-    let chatContent = className === "outgoing" ? `<p>${message}</p>` : `<span class="material-symbols-outlined">smart_toy</span><p>${message}</p>`;
-    chatLi.innerHTML = chatContent;
-    return chatLi;
-};
+setInterval(moveProfiles, 1000);
 
-const scrollToBottom = () => {
-    chatbox.scrollTo({
-        top: chatbox.scrollHeight,
-        behavior: 'smooth'
-    });
-};
-
-const handleChat = async () => {
-    const userMessage = chatInput.value.trim();
-    if (!userMessage) return;
-
-    chatbox.appendChild(createchatLi(userMessage, "outgoing"));
-    chatInput.value = "";
-    scrollToBottom();
-
-    try {
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ message: userMessage })
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        chatbox.appendChild(createchatLi(data.message, "incoming"));
-    } catch (error) {
-        console.error("Error:", error);
-    }
-    finally{
-        scrollToBottom();
-    }
-};
-
-sendChatBtn.addEventListener("click", handleChat);
+// script.js
+document.addEventListener('DOMContentLoaded', () => {
+  const counters = document.querySelectorAll('.counter');
+  
+  counters.forEach(counter => {
+    counter.innerText = '0';
+    
+    const updateCounter = () => {
+      const target = +counter.getAttribute('data-target');
+      const current = +counter.innerText;
+      
+      const increment = target / 200;
+      
+      if (current < target) {
+        counter.innerText = `${Math.ceil(current + increment)}`;
+        setTimeout(updateCounter, 10);
+      } else {
+        counter.innerText = target;
+      }
+    };
+    
+    updateCounter();
+  });
+});
