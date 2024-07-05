@@ -8,12 +8,9 @@ import google.generativeai as genai
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)  # Add this line to enable CORS for all domains
+CORS(app)  # Enable CORS for all domains
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-
-# Your existing code continues...
-
 
 generation_config = {
     "temperature": 0.5,
@@ -26,7 +23,7 @@ generation_config = {
 model = genai.GenerativeModel(
     model_name="gemini-1.5-flash",
     generation_config=generation_config,
-    system_instruction="hey you are a friendly personalized assistant for patients with skin disease queries. You should give them tips and whether to consult a doctor or not. You should not answer anything other than skin queries. Also, be very friendly to users and give home remedy tips for any skin diseases being asked. Also, tell what are the chances that led to the mentioned disease. Tell everything directly. Now you should behave like a good friend and answer like a human.",
+  system_instruction="hey you are a friendly peresonalized assistant for patients with skin disease queries.You should give them tips and whether to consult doctor or not.You should not answer to anything other than skin queries.Also,be very friendly to user and give home remedy tips for any skin diseases being asked.Also,tell what are the chances that led to mentioned disease.Tell evrything straightly on the point without too much explaination.Now you should behave like a good friend and answer straightly to the point like a human.",
 )
 chat_session = model.start_chat(
   history=[
@@ -114,15 +111,24 @@ chat_session = model.start_chat(
         "Ringworm is a common skin infection caused by a fungus. It's not actually a worm, but the name comes from the circular, ring-shaped rash it often produces. \n\nHere's what you should know about ringworm:\n\n* **It's contagious:** Ringworm can spread through direct contact with an infected person or animal, or by touching contaminated objects like towels or clothing.\n* **It's not serious:** Ringworm is usually not a serious condition and can be treated effectively with antifungal medications. \n* **It can affect different parts of the body:** Ringworm can appear on the skin, scalp, nails, or even the feet (athlete's foot).\n\n**Home Remedies for Ringworm:**\n\n* **Tea tree oil:** Diluted tea tree oil can be applied topically to the affected area.\n* **Apple cider vinegar:** A diluted solution of apple cider vinegar can also be used as a topical treatment.\n* **Coconut oil:** Coconut oil has antifungal properties and can help soothe the skin.\n\n**Should you see a doctor?**\n\nWhile home remedies can sometimes help, it's always best to see a doctor if you suspect you have ringworm. They can diagnose the condition and prescribe the most effective treatment for you.\n\nRemember, ringworm is treatable, and with the right care, you can clear up the infection quickly. \n\nDo you have any other questions about ringworm? I'm here to help! \n\n\n",
       ],
     },
+    {
+      "role": "user",
+      "parts": [
+        "hey i think i may have Alopecia Areata",
+      ],
+    },
+    {
+      "role": "model",
+      "parts": [
+        "It's understandable to be concerned about alopecia areata. It can be a scary and confusing experience to suddenly notice hair loss. \n\nHere's what you should know about alopecia areata:\n\n* **It's an autoimmune condition:** This means your body's immune system mistakenly attacks hair follicles, causing hair loss.\n* **It can affect anyone:** Alopecia areata can occur at any age and affects people of all races and ethnicities.\n* **Hair loss can be patchy or widespread:** It can range from a few small patches of hair loss to complete baldness.\n* **It's not contagious:** You can't catch alopecia areata from someone else.\n\n**Should you see a doctor?**\n\nYes, it's essential to see a dermatologist if you suspect you have alopecia areata. They can diagnose the condition and discuss treatment options with you. \n\n**What can you do?**\n\n* **Manage stress:** Stress can worsen alopecia areata symptoms. Find healthy ways to manage stress, like exercise, meditation, or spending time in nature.\n* **Be patient:** Alopecia areata can be unpredictable, and hair loss can sometimes come and go. It's important to be patient and work with your doctor to manage the condition.\n\nRemember, you're not alone. There are many people who live with alopecia areata, and there are resources available to help you cope. \n\nI hope this information helps. Feel free to ask if you have any more questions! \n\n\n",
+      ],
+    },
   ]
 )
-
-  # Start the chat session
-
 def clean_response(text):
-    text = re.sub(r'\*\*', '', text)  # Remove double asterisks
-    text = re.sub(r'\* ', '', text)   # Remove single asterisks used for bullet points
-    return text
+    # Format the response with proper spacing and bullet points
+    formatted_text = text.replace('\n', '<br>').replace('* ', '<br>&bull; ')
+    return formatted_text
 
 @app.route('/api/chatbot', methods=['POST'])
 def chatbot():
