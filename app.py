@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 import google.generativeai as genai
 import mysql.connector
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 
 load_dotenv()
 
@@ -35,8 +35,8 @@ def insert_chat_history(user_message, bot_response):
     conn.close()
 
 
-def strip_html_tags(text):
-    return BeautifulSoup(text, "html.parser").text
+# def strip_html_tags(text):
+#     return BeautifulSoup(text, "html.parser").text
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
 
@@ -89,14 +89,13 @@ def chatbot():
     response = chat_session.send_message(user_input)
     app.logger.info(f"Received model response: {response.text}")
 
-    # Clean, strip HTML tags and return the response text
+    # Clean and return the response text
     cleaned_text = clean_response(response.text)
-    plain_text = strip_html_tags(cleaned_text)
 
     # Store chat history in the database
     insert_chat_history(user_input, cleaned_text)
 
-    return jsonify({"message": plain_text})
+    return jsonify({"message": cleaned_text})
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
