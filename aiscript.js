@@ -1,8 +1,8 @@
 const chatInput = document.querySelector(".chat-input textarea");
-const sendChatBtn = document.getElementById("send-btn"); // Update selector if needed
+const sendChatBtn = document.getElementById("send-btn");
 const chatbox = document.querySelector(".chatbox");
 
-const API_URL = "http://localhost:5000/api/chatbot"; // Update with your Flask server URL
+const API_URL = "http://localhost:5000/api/chatbot"; // Ensure this URL is correct
 
 const createchatLi = (message, className) => {
     const chatLi = document.createElement("li");
@@ -44,10 +44,18 @@ const handleChat = async () => {
         chatbox.appendChild(createchatLi(data.message, "incoming"));
     } catch (error) {
         console.error("Error:", error);
-    }
-    finally{
+        chatbox.appendChild(createchatLi("Sorry, there was an error connecting to the server. Please try again later.", "incoming"));
+    } finally {
         scrollToBottom();
     }
 };
 
 sendChatBtn.addEventListener("click", handleChat);
+
+// Optional: Add event listener to handle 'Enter' key press
+chatInput.addEventListener("keypress", (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault(); // Prevent newline in textarea
+        handleChat();
+    }
+});
