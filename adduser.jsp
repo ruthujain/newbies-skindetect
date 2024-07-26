@@ -41,7 +41,7 @@ try {
     int rowsInserted = ps.executeUpdate();
     if (rowsInserted > 0) {
         out.println("A new user has been inserted successfully!");
-        response.sendRedirect("wel.jsp");
+        response.sendRedirect("index.html");
     } else {
         out.println("Failed to insert user.");
     }
