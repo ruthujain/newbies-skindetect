@@ -47,7 +47,7 @@ if (conn != null) conn.close();
 // Redirecting based on validation result
 if (valid) {
 // User ID and password are valid, redirect to welcome page
-response.sendRedirect("Welcome.jsp");
+response.sendRedirect("index.html");
 } else {
 // User ID and password are invalid, display error message
 out.println("<h2>Login failed. Invalid User ID or Password.</h2>");
